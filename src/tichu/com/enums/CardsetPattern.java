@@ -1,4 +1,4 @@
-package card_game.com.enums;
+package tichu.com.enums;
 
 public enum CardsetPattern {
 	SINGLE_CARD(0)

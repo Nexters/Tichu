@@ -1,8 +1,8 @@
-package card_game.com;
+package tichu.com;
 
-import card_game.com.enums.CardRank;
-import card_game.com.enums.CardSuit;
-import card_game.com.enums.CardType;
+import tichu.com.enums.CardRank;
+import tichu.com.enums.CardSuit;
+import tichu.com.enums.CardType;
 
 public class Card implements Comparable<Card> {
 	public CardType type;

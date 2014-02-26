@@ -1,8 +1,8 @@
-package card_game.com;
+package tichu.com;
 
 import java.util.List;
 
-import card_game.com.enums.CardsetPattern;
+import tichu.com.enums.CardsetPattern;
 
 public class CardSet implements Comparable<CardSet> {
 	// 카드셋 패턴

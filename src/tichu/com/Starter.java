@@ -1,4 +1,4 @@
-package card_game.com;
+package tichu.com;
 
 import java.util.Map.Entry;
 

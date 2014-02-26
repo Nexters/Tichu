@@ -1,4 +1,4 @@
-package card_game.com;
+package tichu.com;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import card_game.com.enums.CardSuit;
-import card_game.com.enums.CardsetPattern;
+import tichu.com.enums.CardSuit;
+import tichu.com.enums.CardsetPattern;
 
 public class Game {
 

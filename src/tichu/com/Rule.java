@@ -1,4 +1,4 @@
-package card_game.com;
+package tichu.com;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,9 +9,9 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import card_game.com.enums.CardRank;
-import card_game.com.enums.CardSuit;
-import card_game.com.enums.CardsetPattern;
+import tichu.com.enums.CardRank;
+import tichu.com.enums.CardSuit;
+import tichu.com.enums.CardsetPattern;
 
 public class Rule {
 

@@ -1,4 +1,4 @@
-package card_game.com;
+package tichu.com;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import card_game.com.enums.CardsetPattern;
-import card_game.com.enums.Tichu;
+import tichu.com.enums.CardsetPattern;
+import tichu.com.enums.Tichu;
 
 public class Player {
 

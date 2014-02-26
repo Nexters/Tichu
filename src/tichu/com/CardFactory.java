@@ -1,12 +1,12 @@
-package card_game.com;
+package tichu.com;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import card_game.com.enums.CardRank;
-import card_game.com.enums.CardSuit;
-import card_game.com.enums.CardType;
+import tichu.com.enums.CardRank;
+import tichu.com.enums.CardSuit;
+import tichu.com.enums.CardType;
 
 /**
  * 카드를 생성한다.
