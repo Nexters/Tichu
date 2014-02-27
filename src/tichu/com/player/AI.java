@@ -33,7 +33,7 @@ public class AI extends Player {
 
 		// 잠시 휴식
 		try {
-			Thread.sleep(1);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -78,15 +78,17 @@ public class AI extends Player {
 				}
 
 			} else {
+				//이미 올라온 패턴에 맞출 경우
 				pattern = playingCardSet.getPattern();
 
 				// 낼 수 있는 카드 목록
 				List<CardSet> availableCardSetList = cardSetMapByPattern
 						.get(pattern);
 
-				// 낼 카드가 없으면?
+				// 낼 카드가 있어야 낸다.
 				if (availableCardSetList != null) {
-					Collections.sort(availableCardSetList);
+					//랜덤하게!!
+					Collections.shuffle(availableCardSetList);
 					for (CardSet cs : availableCardSetList) {
 						// 판 위에 있는 카드보다 숫자가 높을 경우
 						if (cs.compareTo(playingCardSet) > 0) {

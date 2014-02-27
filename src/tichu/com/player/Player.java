@@ -94,6 +94,8 @@ public class Player {
 		@SuppressWarnings("resource")
 		Scanner scan = new Scanner(System.in);
 
+		//현재 있는 패를 보여주고
+		System.out.println(onHandDeck);
 		System.out.println("라지 티츄".concat("? (Y/N) : "));
 		String input = scan.next();
 
@@ -259,10 +261,6 @@ public class Player {
 
 		round.printStatus(); // 현재 게임판을 출력한다.
 
-		if (isFirstCard()) { // 처음 카드를 내는건지 판단한다.
-			callTichu(); // 티츄여부를 확인한다.
-		}
-
 		// 플레이어가 완료명령을 내릴때 까지 선택을 계속한다.
 		@SuppressWarnings("resource")
 		Scanner scan = new Scanner(System.in);
@@ -271,6 +269,10 @@ public class Player {
 		// 자신의 카드를 보여준다
 		System.out.format("\n%s 카드 : \t ", getPlayerName());
 		System.out.println(this.onHandDeck);
+
+		if (isFirstCard()) { // 처음 카드를 내는건지 판단한다.
+			callTichu(); // 티츄여부를 확인한다.
+		}
 
 		do {
 			// 현재 선택한 카드를 보여준다

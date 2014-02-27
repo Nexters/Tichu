@@ -268,6 +268,7 @@ public class CardSetGenerator {
 	 */
 	private static void handlePhoenix(List<Card> cardList,
 			List<CardSet> cardSetList) {
+		// TODO 봉황로직은 추후 정리할 필요가 있다. 대충 만들어서 돌긴 하는데 이유를 모른다..
 		// 봉황이 있으면?! 더미카드를 만들어보자!
 		Set<Card> dummyCardList = new HashSet<>();
 		boolean hasPhoenix = false;

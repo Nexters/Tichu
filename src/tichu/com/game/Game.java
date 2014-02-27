@@ -98,7 +98,8 @@ public class Game {
 		Game game = new Game(100);
 
 		// 플레이어 생성
-		Player p1 = new AI("player_01");
+		//Player p1 = new AI("player_01");
+		Player p1 = new Player("player_01");
 		Player p2 = new AI("player_02");
 		Player p3 = new AI("player_03");
 		Player p4 = new AI("player_04");
