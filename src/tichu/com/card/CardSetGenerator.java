@@ -13,7 +13,9 @@ import tichu.com.enums.CardSuit;
 import tichu.com.enums.CardsetPattern;
 
 public class CardSetGenerator {
-	
+
+	private static Card phoenix = new Card(CardSuit.PHOENIX, CardRank.PHOENIX);
+
 	/**
 	 * 카드셋을 생성한다.
 	 * 
@@ -26,18 +28,25 @@ public class CardSetGenerator {
 
 		// 출력할 카드셋 목록
 		List<CardSet> cardSetList = new ArrayList<>();
-		
-		generate(cardList,cardSetList);
-		
-		// 봉황처리
+
+		// 카드셋을 만들고
+		generate(cardList, cardSetList);
+
+		// 봉황처리. 봉황이 있으면 봉황이 들어간 카드셋을 추가한다.
 		handlePhoenix(cardList, cardSetList);
-		
-		//System.out.println(cardSetList);
-		
+
+		// System.out.println(cardSetList);
+
 		return cardSetList;
 	}
-	
-	private static void generate(List<Card> cardList, List<CardSet> cardSetList){
+
+	/**
+	 * 카드셋 생성
+	 * 
+	 * @param cardList
+	 * @param cardSetList
+	 */
+	private static void generate(List<Card> cardList, List<CardSet> cardSetList) {
 		// 가장 쎈것부터 만들어보자.
 
 		// 판별을 위해 우선 정리한다.
@@ -67,9 +76,9 @@ public class CardSetGenerator {
 		cardListMapBySuit.remove(CardSuit.PHOENIX);
 
 		// 확인
-		//System.out.println();
-		//System.out.println(cardListMapBySuit);
-		//System.out.println(cardListMapByRank);
+		// System.out.println();
+		// System.out.println(cardListMapBySuit);
+		// System.out.println(cardListMapByRank);
 
 		// #################
 		// 스트레이트플러쉬
@@ -92,8 +101,13 @@ public class CardSetGenerator {
 			// 같은숫자 카드가 네장이면!!
 			// 포카드!
 			if (cards.size() == 4) {
-				//System.out.println("for card!!");
-				//System.out.println(e.getValue());
+				// System.out.println("for card!!");
+				// System.out.println(e.getValue());
+
+				// 포카드에선 봉황을 제외한다.
+				if (cards.contains(phoenix)) {
+					continue;
+				}
 
 				CardSet fourCard = new CardSet(CardsetPattern.FOUR_CARDS, cards);
 				cardSetList.add(fourCard);
@@ -102,8 +116,8 @@ public class CardSetGenerator {
 			// 같은숫자 카드가 세장이면!
 			// 트리플
 			if (cards.size() == 3) {
-				//System.out.println("triple!");
-				//System.out.println(e.getValue());
+				// System.out.println("triple!");
+				// System.out.println(e.getValue());
 
 				CardSet triple = new CardSet(CardsetPattern.TRIPLE, cards);
 				cardSetList.add(triple);
@@ -112,8 +126,8 @@ public class CardSetGenerator {
 			// 같은숫자 카드가 두장이면!
 			// 페어
 			if (cards.size() == 2) {
-				//System.out.println("pair!");
-				//System.out.println(e.getValue());
+				// System.out.println("pair!");
+				// System.out.println(e.getValue());
 
 				CardSet pair = new CardSet(CardsetPattern.PAIR, cards);
 				cardSetList.add(pair);
@@ -148,13 +162,16 @@ public class CardSetGenerator {
 					fullHouseCardList.addAll(tripleCardSet.getCards());
 					fullHouseCardList.addAll(pairCardSet.getCards());
 
-					// 풀하우스 카드셋 생성
-					CardSet fullHouse = new CardSet(CardsetPattern.FULL_HOUSES,
-							fullHouseCardList);
-					cardSetList.add(fullHouse);
+					//봉황 더미카드가 한장 이하면 정상
+					if (phoenixCount(fullHouseCardList) <= 1) {
+						// 풀하우스 카드셋 생성
+						CardSet fullHouse = new CardSet(
+								CardsetPattern.FULL_HOUSES, fullHouseCardList);
+						cardSetList.add(fullHouse);
+					}
 
-					//System.out.println("full house!");
-					//System.out.println(fullHouseCardList);
+					// System.out.println("full house!");
+					// System.out.println(fullHouseCardList);
 				}
 			}
 
@@ -196,11 +213,14 @@ public class CardSetGenerator {
 
 					// 일정길이 이상 일치하면!
 					if (straightCnt > 0) {
-						CardSet stairCardSet = new CardSet(
-								CardsetPattern.STAIRS, tempCardList);
-						cardSetList.add(stairCardSet);
-						//System.out.println("stair!");
-						//System.out.println(tempCardList);
+						//봉황 더미카드가 한장 이하면 정상
+						if (phoenixCount(tempCardList) <= 1) {
+							CardSet stairCardSet = new CardSet(
+									CardsetPattern.STAIRS, tempCardList);
+							cardSetList.add(stairCardSet);
+						}
+						// System.out.println("stair!");
+						// System.out.println(tempCardList);
 					}
 				}
 
@@ -212,16 +232,16 @@ public class CardSetGenerator {
 		checkStraight(cardList, straight, CardsetPattern.STRAIGHTS, cardSetList);
 
 		// 아무 카드셋에도 없는 패를 고른다.
-//		Set<Card> hasPatternCardList = new HashSet<>();
-//		List<Card> singleCardList = new ArrayList<>(cardList);
-//		for (CardSet cs : cardSetList) {
-//			hasPatternCardList.addAll(cs.getCards());
-//		}
-//		singleCardList.removeAll(hasPatternCardList);
-//
-//		// 나머지는 쩌리 싱글
-		
-		//모든 카드를 싱글카드로 넣는다.
+		// Set<Card> hasPatternCardList = new HashSet<>();
+		// List<Card> singleCardList = new ArrayList<>(cardList);
+		// for (CardSet cs : cardSetList) {
+		// hasPatternCardList.addAll(cs.getCards());
+		// }
+		// singleCardList.removeAll(hasPatternCardList);
+		//
+		// // 나머지는 쩌리 싱글
+
+		// 모든 카드를 싱글카드로 넣는다.
 		for (Card c : cardList) {
 			List<Card> card = new ArrayList<>();
 			card.add(c);
@@ -229,8 +249,8 @@ public class CardSetGenerator {
 					card);
 			cardSetList.add(singleCardSet);
 
-			//System.out.println("single..");
-			//System.out.println(card);
+			// System.out.println("single..");
+			// System.out.println(card);
 		}
 
 		// TODO
@@ -244,14 +264,15 @@ public class CardSetGenerator {
 	 * 봉황을 갖고있을때 카드조합을 만들기 위한 방법
 	 * 
 	 * @param cardList
-	 * @param cardSetList 
+	 * @param cardSetList
 	 */
-	private static void handlePhoenix(List<Card> cardList, List<CardSet> cardSetList) {
+	private static void handlePhoenix(List<Card> cardList,
+			List<CardSet> cardSetList) {
 		// 봉황이 있으면?! 더미카드를 만들어보자!
 		Set<Card> dummyCardList = new HashSet<>();
 		boolean hasPhoenix = false;
 		for (Card c : cardList) {
-			if (c.getSuit().equals(CardSuit.PHOENIX)) {
+			if (c.equals(phoenix)) {
 				hasPhoenix = true;
 			}
 		}
@@ -259,7 +280,7 @@ public class CardSetGenerator {
 		Set<CardRank> dummyRanks = new HashSet<>();
 		if (hasPhoenix) {
 			for (Card c : cardList) {
-				//System.out.println(c);
+				// System.out.println(c);
 				if (!c.getRank().equals(CardRank.DOG)
 						&& !c.getRank().equals(CardRank.DRAGON)
 						&& !c.getRank().equals(CardRank.ONE)
@@ -268,16 +289,33 @@ public class CardSetGenerator {
 				}
 			}
 		}
-		
-		for(CardRank rank : dummyRanks){
-			Card dummy = new Card(CardSuit.PHOENIX, rank);			
+
+		for (CardRank rank : dummyRanks) {
+			Card dummy = new Card(CardSuit.PHOENIX, rank);
 			dummyCardList.add(dummy);
 		}
-		
-		//System.out.println(dummyCardList);
+
+		// System.out.println(dummyCardList);
 		cardList.addAll(dummyCardList);
-		
-		generate(cardList,cardSetList);
+
+		generate(cardList, cardSetList);
+	}
+
+	/**
+	 * 봉황을 두장 낼 수 없게 예외처리.
+	 * 
+	 * @param c
+	 * @return
+	 */
+	private static int phoenixCount(List<Card> cardList) {
+		int total = 0;
+		// 봉황 더미카드가 몇장인지 확인한다.
+		for (Card cd : cardList) {
+			if (cd.getSuit().equals(CardSuit.PHOENIX)) {
+				total++;
+			}
+		}
+		return total;
 	}
 
 	/**
@@ -293,6 +331,11 @@ public class CardSetGenerator {
 	 */
 	public static void checkStraight(List<Card> chkCardList, int straight,
 			CardsetPattern cardSetPattern, List<CardSet> cardSetList) {
+
+		// 스트레이트플러쉬를 판별할 때에는 봉황카드를 제외한다.
+		if (cardSetPattern.equals(CardsetPattern.STRAIGHT_FLUSH)) {
+			chkCardList.remove(phoenix);
+		}
 
 		for (Card c1 : chkCardList) {// 한장씩 들고
 			int straightCnt = 0; // 비교 카운트
@@ -319,11 +362,14 @@ public class CardSetGenerator {
 			// 한장의 비교가 끝나면 몇번 연속되었는지 확인한다. 5장이상이 연속되려면, 연속카운트는 4 이상이여야
 			// 한다.
 			if (straightCnt >= straight - 1) {
-				CardSet straightCardSet = new CardSet(cardSetPattern,
-						tempCardList);
-				cardSetList.add(straightCardSet);
-				//System.out.println(cardSetPattern);
-				//System.out.println(tempCardList);
+				//봉황 더미카드가 한장 이하면 정상
+				if (phoenixCount(tempCardList) <= 1) {
+					CardSet straightCardSet = new CardSet(cardSetPattern,
+							tempCardList);
+					cardSetList.add(straightCardSet);
+				}
+				// System.out.println(cardSetPattern);
+				// System.out.println(tempCardList);
 			}
 		}
 	}

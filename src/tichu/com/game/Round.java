@@ -357,7 +357,9 @@ public class Round {
 	 * 개를 냈을때 턴을 점프한다.
 	 */
 	public void jumpTurn(){
-		this.turn += 1;
+		if(rankCounter == 0){
+			this.turn += 1;
+		}
 	}
 
 }

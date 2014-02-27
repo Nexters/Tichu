@@ -218,9 +218,14 @@ public class Player {
 		
 		//용으로 밟았으면!
 		CardSet cs = onDeskCards.peekLast();
-		for(Card c : cs.getCards()){
-			if(c.getSuit().equals(CardSuit.DRAGON)){
-				hasDragon = true;
+		
+		//마지막에 낸 패가 있으면
+		if(cs != null){
+			//용이 있는지 검사한다.
+			for(Card c : cs.getCards()){
+				if(c.getSuit().equals(CardSuit.DRAGON)){
+					hasDragon = true;
+				}
 			}
 		}
 		
@@ -470,9 +475,9 @@ public class Player {
 		int total = 0;
 		for (CardSet cs : takenCards) {
 			for (Card c : cs.getCards()) {
-				if (c.getRank().equals(CardRank.DRAGON)) {
+				if (c.getSuit().equals(CardSuit.DRAGON)) {
 					total += 25;
-				} else if (c.getRank().equals(CardRank.PHOENIX)) {
+				} else if (c.getSuit().equals(CardSuit.PHOENIX)) {
 					total -= 25;
 				} else if (c.getRank().equals(CardRank.FIVE)) {
 					total += 5;
