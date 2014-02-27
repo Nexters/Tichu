@@ -13,15 +13,31 @@ import tichu.com.enums.CardSuit;
 import tichu.com.enums.CardsetPattern;
 
 public class CardSetGenerator {
+	
 	/**
 	 * 카드셋을 생성한다.
 	 * 
 	 * @param cardList
 	 * @return
 	 */
-	public static List<CardSet> generateCardSet(List<Card> cardList) {
+	public static List<CardSet> generateCardSet(List<Card> originalCardList) {
+
+		List<Card> cardList = new ArrayList<>(originalCardList);
+
 		// 출력할 카드셋 목록
-		List<CardSet> cardSetList = new ArrayList<CardSet>();
+		List<CardSet> cardSetList = new ArrayList<>();
+		
+		generate(cardList,cardSetList);
+		
+		// 봉황처리
+		handlePhoenix(cardList, cardSetList);
+		
+		//System.out.println(cardSetList);
+		
+		return cardSetList;
+	}
+	
+	private static void generate(List<Card> cardList, List<CardSet> cardSetList){
 		// 가장 쎈것부터 만들어보자.
 
 		// 판별을 위해 우선 정리한다.
@@ -47,10 +63,13 @@ public class CardSetGenerator {
 			cardListMapByRank.get(c.getRank()).add(c);
 		}
 
+		// 문양별 정리에서 봉황은 제외
+		cardListMapBySuit.remove(CardSuit.PHOENIX);
+
 		// 확인
-		// System.out.println();
-		// System.out.println(cardListMapBySuit);
-		// System.out.println(cardListMapByRank);
+		//System.out.println();
+		//System.out.println(cardListMapBySuit);
+		//System.out.println(cardListMapByRank);
 
 		// #################
 		// 스트레이트플러쉬
@@ -73,8 +92,8 @@ public class CardSetGenerator {
 			// 같은숫자 카드가 네장이면!!
 			// 포카드!
 			if (cards.size() == 4) {
-				// System.out.println("for card!!");
-				// System.out.println(e.getValue());
+				//System.out.println("for card!!");
+				//System.out.println(e.getValue());
 
 				CardSet fourCard = new CardSet(CardsetPattern.FOUR_CARDS, cards);
 				cardSetList.add(fourCard);
@@ -83,8 +102,8 @@ public class CardSetGenerator {
 			// 같은숫자 카드가 세장이면!
 			// 트리플
 			if (cards.size() == 3) {
-				// System.out.println("triple!");
-				// System.out.println(e.getValue());
+				//System.out.println("triple!");
+				//System.out.println(e.getValue());
 
 				CardSet triple = new CardSet(CardsetPattern.TRIPLE, cards);
 				cardSetList.add(triple);
@@ -93,8 +112,8 @@ public class CardSetGenerator {
 			// 같은숫자 카드가 두장이면!
 			// 페어
 			if (cards.size() == 2) {
-				// System.out.println("pair!");
-				// System.out.println(e.getValue());
+				//System.out.println("pair!");
+				//System.out.println(e.getValue());
 
 				CardSet pair = new CardSet(CardsetPattern.PAIR, cards);
 				cardSetList.add(pair);
@@ -134,8 +153,8 @@ public class CardSetGenerator {
 							fullHouseCardList);
 					cardSetList.add(fullHouse);
 
-					// System.out.println("full house!");
-					// System.out.println(fullHouseCardList);
+					//System.out.println("full house!");
+					//System.out.println(fullHouseCardList);
 				}
 			}
 
@@ -152,15 +171,15 @@ public class CardSetGenerator {
 				for (CardSet cs1 : pairCardSetList) {// 한장씩 들고
 					int straightCnt = 0; // 비교 카운트
 					int c1Rank = cs1.getCards().get(0).getRank().getValue();// 비교할
-																	// 카드
-																	// 숫자
+					// 카드
+					// 숫자
 					List<Card> tempCardList = new ArrayList<>();
 					tempCardList.addAll(cs1.getCards());
 
 					for (CardSet cs2 : pairCardSetList) {// 한장씩 비교
 						int c2Rank = cs2.getCards().get(0).getRank().getValue();// 비교할
-																		// 카드
-																		// 숫자
+						// 카드
+						// 숫자
 
 						if (c1Rank != c2Rank) {// 같은 숫자가 아니면
 
@@ -180,8 +199,8 @@ public class CardSetGenerator {
 						CardSet stairCardSet = new CardSet(
 								CardsetPattern.STAIRS, tempCardList);
 						cardSetList.add(stairCardSet);
-						// System.out.println("stair!");
-						// System.out.println(tempCardList);
+						//System.out.println("stair!");
+						//System.out.println(tempCardList);
 					}
 				}
 
@@ -193,23 +212,25 @@ public class CardSetGenerator {
 		checkStraight(cardList, straight, CardsetPattern.STRAIGHTS, cardSetList);
 
 		// 아무 카드셋에도 없는 패를 고른다.
-		Set<Card> hasPatternCardList = new HashSet<>();
-		List<Card> singleCardList = new ArrayList<>(cardList);
-		for (CardSet cs : cardSetList) {
-			hasPatternCardList.addAll(cs.getCards());
-		}
-		singleCardList.removeAll(hasPatternCardList);
-
-		// 나머지는 쩌리 싱글
-		for (Card c : singleCardList) {
+//		Set<Card> hasPatternCardList = new HashSet<>();
+//		List<Card> singleCardList = new ArrayList<>(cardList);
+//		for (CardSet cs : cardSetList) {
+//			hasPatternCardList.addAll(cs.getCards());
+//		}
+//		singleCardList.removeAll(hasPatternCardList);
+//
+//		// 나머지는 쩌리 싱글
+		
+		//모든 카드를 싱글카드로 넣는다.
+		for (Card c : cardList) {
 			List<Card> card = new ArrayList<>();
 			card.add(c);
 			CardSet singleCardSet = new CardSet(CardsetPattern.SINGLE_CARD,
 					card);
 			cardSetList.add(singleCardSet);
 
-			// System.out.println("single..");
-			// System.out.println(card);
+			//System.out.println("single..");
+			//System.out.println(card);
 		}
 
 		// TODO
@@ -217,8 +238,46 @@ public class CardSetGenerator {
 		// 상위패는 어떻게 판별할것인가?
 		// 폭탄은 우선 절대적으로 판단하고
 		// 폭탄이 아닌것은 나중에 생각해보자..
+	}
 
-		return cardSetList;
+	/**
+	 * 봉황을 갖고있을때 카드조합을 만들기 위한 방법
+	 * 
+	 * @param cardList
+	 * @param cardSetList 
+	 */
+	private static void handlePhoenix(List<Card> cardList, List<CardSet> cardSetList) {
+		// 봉황이 있으면?! 더미카드를 만들어보자!
+		Set<Card> dummyCardList = new HashSet<>();
+		boolean hasPhoenix = false;
+		for (Card c : cardList) {
+			if (c.getSuit().equals(CardSuit.PHOENIX)) {
+				hasPhoenix = true;
+			}
+		}
+
+		Set<CardRank> dummyRanks = new HashSet<>();
+		if (hasPhoenix) {
+			for (Card c : cardList) {
+				//System.out.println(c);
+				if (!c.getRank().equals(CardRank.DOG)
+						&& !c.getRank().equals(CardRank.DRAGON)
+						&& !c.getRank().equals(CardRank.ONE)
+						&& !c.getRank().equals(CardRank.PHOENIX)) {
+					dummyRanks.add(c.getRank());
+				}
+			}
+		}
+		
+		for(CardRank rank : dummyRanks){
+			Card dummy = new Card(CardSuit.PHOENIX, rank);			
+			dummyCardList.add(dummy);
+		}
+		
+		//System.out.println(dummyCardList);
+		cardList.addAll(dummyCardList);
+		
+		generate(cardList,cardSetList);
 	}
 
 	/**
@@ -263,14 +322,15 @@ public class CardSetGenerator {
 				CardSet straightCardSet = new CardSet(cardSetPattern,
 						tempCardList);
 				cardSetList.add(straightCardSet);
-				// System.out.println(cardSetPattern);
-				// System.out.println(tempCardList);
+				//System.out.println(cardSetPattern);
+				//System.out.println(tempCardList);
 			}
 		}
 	}
-	
+
 	/**
 	 * 패턴에 맞는 카드셋 목록을 받아온다.
+	 * 
 	 * @param cardSetList
 	 * @return
 	 */

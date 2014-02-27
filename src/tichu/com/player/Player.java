@@ -416,6 +416,9 @@ public class Player {
 
 		// 자기 카드 덱에서 카드를 지운다
 		for (Card c : cardSet.getCards()) {
+			if(c.getSuit().equals(CardSuit.PHOENIX)){
+				this.onHandDeck.remove(new Card(CardSuit.PHOENIX, CardRank.PHOENIX));
+			}
 			this.onHandDeck.remove(c);
 		}
 
