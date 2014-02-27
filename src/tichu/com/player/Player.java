@@ -210,10 +210,32 @@ public class Player {
 
 	/**
 	 * 카드셋을 가져온다.
+	 * @param players 
 	 */
-	public void collectCardSets(ConcurrentLinkedDeque<CardSet> onDeskCards) {
-		// 카드를 가져오고
-		this.takenCards.addAll(onDeskCards);
+	public void collectCardSets(ConcurrentLinkedDeque<CardSet> onDeskCards, List<Player> players) {
+		//TODO 예외처리.
+		boolean hasDragon = false;
+		
+		//용으로 밟았으면!
+		CardSet cs = onDeskCards.peekLast();
+		for(Card c : cs.getCards()){
+			if(c.getSuit().equals(CardSuit.DRAGON)){
+				hasDragon = true;
+			}
+		}
+		
+		if(hasDragon){
+			//용이 있으면 상대편에게 준다.
+			for(Player p : players){
+				if(p.getTeam() != this.getTeam()){
+					p.takenCards.addAll(onDeskCards);
+					break;
+				}
+			}
+		}else{
+			// 카드를 가져오고
+			this.takenCards.addAll(onDeskCards);
+		}
 		// 초기화한다.
 		onDeskCards.clear();
 	}
@@ -323,10 +345,20 @@ public class Player {
 				System.out.println("낼 수 없는 카드조합입니다.");
 				return false;
 			}
-
-			// 카드를 낸다.
-			playCardSet(cardSet, round);
-
+			
+			//카드를 내는 로직
+			if(cardSet.getCards().get(0).getSuit().equals(CardSuit.DOG)){
+				//개일땐 턴을 점프한다.
+				round.jumpTurn();
+				// 자기 카드 덱에서 개카드를 지운다
+				for (Card c : cardSet.getCards()) {
+					this.onHandDeck.remove(c);
+				}
+			}else{
+				// 개가 아니면 일반적으로 카드를 낸다.
+				playCardSet(cardSet, round);
+			}
+			
 			return true;
 		} catch (CardSetException e) {
 			// 아무것도 내지 않은것이면 그냥 패스한것이므로 true를 반환한다.

@@ -64,7 +64,7 @@ public class Round {
 			Player p = selectCurrentTurnPlayer(); // 이번 턴에 플레이할 사용자를 선택한다.
 
 			if (p.equals(lastPutPlayer)) { // 마지막으로 낸 사람을 체크한다.
-				p.collectCardSets(onDeskCards); // 현재 턴인 플레이어면 게임판의 카드를 가져온다.
+				p.collectCardSets(onDeskCards, players); // 현재 턴인 플레이어면 게임판의 카드를 가져온다.
 			}
 
 			do { // 사용자가 제대로 카드를 낼 때까지 반복.
@@ -351,6 +351,13 @@ public class Round {
 		}
 		System.out
 				.println("\n########################################################");
+	}
+	
+	/**
+	 * 개를 냈을때 턴을 점프한다.
+	 */
+	public void jumpTurn(){
+		this.turn += 1;
 	}
 
 }
