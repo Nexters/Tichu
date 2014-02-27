@@ -3,12 +3,13 @@ package tichu.com;
 import java.util.List;
 
 import tichu.com.enums.CardsetPattern;
+import tichu.com.ex.CardSetException;
 
 public class CardSet implements Comparable<CardSet> {
 	// 카드셋 패턴
-	public CardsetPattern pattern;
+	private CardsetPattern pattern;
 	// 카드셋에 포함된 카드
-	public List<Card> cards;
+	private List<Card> cards;
 
 	/**
 	 * 패턴과 카드들로 카드셋을 생성한다.
@@ -19,9 +20,44 @@ public class CardSet implements Comparable<CardSet> {
 	 *            카드들.
 	 */
 	public CardSet(CardsetPattern pattern, List<Card> cards) {
-		super();
 		this.pattern = pattern;
 		this.cards = cards;
+	}
+
+	/**
+	 * 입력받은 카드 목록을 가지고 카드셋을 생성한다.
+	 * 
+	 * @param cards
+	 *            입력 카드 목록
+	 * @throws CardSetException
+	 *             입력한 카드목록으로 카드셋을 생성할 수 없으면 예외처리.
+	 */
+	public CardSet(List<Card> cards) throws CardSetException {
+		makeCardSetByCards(cards);
+	}
+
+	/**
+	 * 카드셋 생성
+	 * 
+	 * @param cards
+	 * @throws CardSetException
+	 */
+	private void makeCardSetByCards(List<Card> cardList)
+			throws CardSetException {
+		// 입력한 카드들로 조합 가능한 카드셋을 만든다.
+		List<CardSet> cardSetList = CardSetGenerator.generateCardSet(cardList);
+
+		for (CardSet cs : cardSetList) {
+			// 입력한 카드 모두를 사용해서 만든 카드셋을 판별한다.
+			if (cs.cards.size() == cardList.size()) {
+				this.pattern = cs.pattern;
+				this.cards = cs.cards;
+				return;
+			}
+		}
+
+		// 입력한 카드 모두를 사용한 카드셋이 없으면 예외처리
+		throw new CardSetException("적합한 카드셋을 생성할 수 없습니다.");
 	}
 
 	/**
@@ -52,7 +88,7 @@ public class CardSet implements Comparable<CardSet> {
 		} else {
 			// 폭탄이 아닌 경우이다.
 			// 카드셋의 맨 처음 카드를 꺼내서 크기를 비교한다
-			// 봉황일때 처리를 해준다.
+			// TODO 봉황일때 처리를 해준다.
 			Card thisCard = this.cards.get(0);
 			Card comparedCard = compared.cards.get(0);
 			int thisCardRank = thisCard.rank.getValue();
@@ -67,5 +103,24 @@ public class CardSet implements Comparable<CardSet> {
 			}
 		}
 	}
+
+	/**
+	 * 패턴을 받아온다.
+	 * 
+	 * @return
+	 */
+	public CardsetPattern getPattern() {
+		return pattern;
+	}
+
+	/**
+	 * 카드셋에 속한 카드들을 받아온다.
+	 * @return
+	 */
+	public List<Card> getCards() {
+		return cards;
+	}
+	
+	
 
 }

@@ -16,19 +16,34 @@ import tichu.com.enums.CardType;
  */
 public class CardFactory {
 	// 카드를 담는 덱
-	public List<Card> deck;
+	private List<Card> deck;
 
 	public CardFactory() {
 		deck = new ArrayList<Card>();
 
 		// 특수카드를 생성한다.
-		Card MahJong = new Card(CardType.EXTRA, CardSuit.MAH_JONG,
-				CardRank.ONE, "MAH_JONG");
-		Card Dog = new Card(CardType.EXTRA, CardSuit.DOG, CardRank.DOG, "DOG");
+		makeExtraCards();
+
+		// 일반 카드를 생성한다.
+		makeNormalCards();
+
+		// 카드를 섞는다.
+		Collections.shuffle(deck);
+
+		// TODO 카드 확인용 출력
+		System.out.println(deck);
+	}
+
+	/**
+	 * 특수카드를 생성한다.
+	 */
+	private void makeExtraCards() {
+
+		Card MahJong = new Card(CardType.EXTRA, CardSuit.MAH_JONG, CardRank.ONE);
+		Card Dog = new Card(CardType.EXTRA, CardSuit.DOG, CardRank.DOG);
 		Card Phoenix = new Card(CardType.EXTRA, CardSuit.PHOENIX,
-				CardRank.PHOENIX, "PHOENIX");
-		Card Dragon = new Card(CardType.EXTRA, CardSuit.DRAGON,
-				CardRank.DRAGON, "DRAGON");
+				CardRank.PHOENIX);
+		Card Dragon = new Card(CardType.EXTRA, CardSuit.DRAGON, CardRank.DRAGON);
 
 		// 덱에 추가
 		deck.add(MahJong);
@@ -36,26 +51,28 @@ public class CardFactory {
 		deck.add(Phoenix);
 		deck.add(Dragon);
 
-		// 일반 카드를 생성한다.
+	}
+
+	/**
+	 * 일반카드를 생성한다.
+	 */
+	private void makeNormalCards() {
 		for (CardSuit suit : CardSuit.values()) {
 			// 특수카드를 제외한다.
 			if (!suit.equals(CardSuit.DOG) && !suit.equals(CardSuit.MAH_JONG)
 					&& !suit.equals(CardSuit.DRAGON)
 					&& !suit.equals(CardSuit.PHOENIX)) {
-				
+
 				for (CardRank rank : CardRank.values()) {
 					// 특수카드를 제외한다.
 					if (!rank.equals(CardRank.ONE)
 							&& !rank.equals(CardRank.DOG)
 							&& !rank.equals(CardRank.PHOENIX)
 							&& !rank.equals(CardRank.DRAGON)) {
-						
-						// 카드 이름
-						String cardName = suit.toString().concat("_")
-								.concat(rank.toString());
+
 						// 카드 생성하고
-						Card card = new Card(CardType.NORMAL, suit, rank,
-								cardName);
+						Card card = new Card(CardType.NORMAL, suit, rank);
+
 						// 덱에 넣는다.
 						deck.add(card);
 					}
@@ -63,11 +80,6 @@ public class CardFactory {
 			}
 		}
 
-		// 카드를 섞는다.
-		Collections.shuffle(deck);
-
-		//TODO 카드 확인용 출력
-		System.out.println(deck);
 	}
 
 	/**
@@ -92,6 +104,5 @@ public class CardFactory {
 			return null;
 		}
 	}
-
 
 }

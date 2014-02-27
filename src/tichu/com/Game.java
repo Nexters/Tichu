@@ -1,47 +1,61 @@
 package tichu.com;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedDeque;
-
-import tichu.com.enums.CardSuit;
-import tichu.com.enums.CardsetPattern;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Game {
+	// 목표점수
+	public int score;
 
-	// 카드생성기
-	public CardFactory cardFactory;
+	// 플레이어 목록
+	public List<Player> players;
+
 	// 플레이어 수. 0부터 시작하기 때문에 3이 최대다.
 	public int playerCount = 0;
-	// 진행중인 플레이어
-	public Map<Integer, Player> players;
-	// 진행중인 플레이어 (코딩을 쉽게 하기 위해 플레이어만 모아놓은 집합을 정의.
-	public Set<Player> playerSet;
-	// 게임판 위에 있는 카드
-	public ConcurrentLinkedDeque<CardSet> onDeskCards;
-	// 게임판 위 진행중인 카드셋
-	public CardsetPattern playingPattern;
-	// 턴
-	public int turn;
-	// 마지막으로 카드를 낸 사람.
-	public Player lastPutPlayer;
-	// 순위 정리
-	public Map<Integer, Player> playerRanking;
-	// 점수판
-	public Map<Player, Integer> scoreBoard;
 
 	// 준비상태
 	public boolean isReady = false;
 
-	public Game() {
-		cardFactory = new CardFactory();
-		players = new HashMap<Integer, Player>();
-		playerSet = new HashSet<Player>();
-		onDeskCards = new ConcurrentLinkedDeque<>();
-		playerRanking = new HashMap<>();
-		scoreBoard = new HashMap<>();
+	public Game(int score) {
+		this.score = score;
+		this.players= new ArrayList<>();  
+	}
+
+	/**
+	 * 게임 실행
+	 */
+	public void run() {
+		Round round;
+
+		do {
+			// 새로운 라운드 생성
+			round = new Round(players);
+
+			// 라운드 시작
+			start(round);
+
+			// TODO 종료조건은 임시다.
+			// 점수를 만족할 때 까지 계속한다.
+		} while (gameIsEnd(round));
+	}
+
+	/**
+	 * 라운드 시작
+	 * 
+	 * @param round
+	 */
+	private void start(Round round) {
+		round.run();
+	}
+
+	/**
+	 * 게임종료체크
+	 * 
+	 * @param round
+	 * @return
+	 */
+	private boolean gameIsEnd(Round round) {
+		return false;
 	}
 
 	/**
@@ -56,11 +70,11 @@ public class Game {
 		if (playerCount < 4) {
 			int playSeq = playerCount++;
 			// 순서를 플레이어에게 입력하고
-			player.playSeq = playSeq;
+			player.setPlaySeq(playSeq);
 			// 플레이어를 등록하고
-			players.put(playSeq, player);
-			// 플레이어가 4명이 가득 차면 준비상태를 준비완료true로 바꾼다. 0,1,2,3이기 때문에 playSeq가 3일때를
-			// 체크한다.
+			players.add(player);
+			// 플레이어가 4명이 가득 차면 준비상태를 준비완료true로 바꾼다.
+			// 0,1,2,3이기 때문에 playSeq가 3일때를 체크한다.
 			if (playSeq == 3) {
 				isReady = true;
 			}
@@ -71,61 +85,29 @@ public class Game {
 	}
 
 	/**
-	 * 모든 플레이어의 카드를 출력한다.
+	 * 게임실행!
 	 * 
-	 * @param playerSet
+	 * @param args
 	 */
-	public void printEveryPlayersCards(Set<Player> playerSet) {
-		for (Player p : playerSet) {
-			System.out.format("\n %s : ", p.playerName);
-			for (Card c : p.onHandDeck) {
-				System.out.format("\t%s", c.toString());
-			}
-			System.out.format("\n \t : ");
-			for (CardSet cs : p.takenCards) {
-				System.out.format("\t%s", cs.toString());
-			}
-		}
+	public static void main(String[] args) {
+		
+		//게임방 생성
+		Game game = new Game(100);
+
+		// 플레이어 생성
+		Player p1 = new AI("player_01");
+		Player p2 = new AI("player_02");
+		Player p3 = new AI("player_03");
+		Player p4 = new AI("player_04");
+		
+		// 플레이어 등록
+		game.addPlayer(p1);
+		game.addPlayer(p2);
+		game.addPlayer(p3);
+		game.addPlayer(p4);
+
+		//게임 시작
+		game.run();
+		
 	}
-
-	/**
-	 * 1번카드를 갖고있는 플레이어를 검색한다.
-	 * 
-	 * @param playerSet
-	 * @return
-	 */
-	public Player getHadMahJongPlayer(Set<Player> playerSet) {
-		for (Player p : playerSet) {
-			for (Card c : p.onHandDeck) {
-				if (c.suit.equals(CardSuit.MAH_JONG)) {
-					return p;
-				}
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * 현재 게임상황을 출력한다.
-	 */
-	public void printStatus() {
-		// printEveryPlayersCards(playerSet);
-
-		// System.out.format(" on Desk Card ");
-		for (CardSet cs : onDeskCards) {
-			System.out.format("\t %s ", cs.toString());
-		}
-	}
-
-	/**
-	 * 카드판 초기화
-	 */
-	public void initOnDeskCards() {
-		// 게임판 초기화
-		this.onDeskCards = new ConcurrentLinkedDeque<>();
-
-		// 새로운 패를 시작한다.
-		this.playingPattern = null;
-	}
-
 }
