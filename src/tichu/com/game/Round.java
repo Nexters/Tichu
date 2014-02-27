@@ -4,9 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import tichu.com.card.Card;
 import tichu.com.card.CardFactory;
@@ -36,8 +34,8 @@ public class Round {
 	// 카운터
 	private Counter counter = new Counter();
 
-	// 순위에따라 등록
-	private Queue<Player> playerRanking = new LinkedBlockingQueue<>(4);
+	// 등수 카운터
+	private int rankCounter = 0;
 
 	public Round(List<Player> players) {
 		this.players = players;
@@ -70,7 +68,7 @@ public class Round {
 			}
 
 			do { // 사용자가 제대로 카드를 낼 때까지 반복.
-				
+
 				p.selectCards(this); // 플레이어가 낼 카드를 선택한다.
 
 			} while (!p.validateAndPlayCardSet(this)); // 카드셋이 적합한지 검사하고, 유효하면
@@ -105,7 +103,7 @@ public class Round {
 	private void callLargeTichu(Counter counter) {
 
 		for (Player p : players) {
-			p.callTichu(Tichu.LARGE_TICHU, counter);
+			p.callLargeTichu(counter);
 		}
 
 		while (!counter.isReady()) {
@@ -145,11 +143,12 @@ public class Round {
 
 	/**
 	 * 카드교환 리스트에 담겨져있는 카드를 플레이어마다 나누어준다.
+	 * 
 	 * @param exchangeCardListMap
 	 */
 	private void distributeCard(Map<Player, List<Card>> exchangeCardListMap) {
-		
-		for(Entry<Player, List<Card>> e: exchangeCardListMap.entrySet()){
+
+		for (Entry<Player, List<Card>> e : exchangeCardListMap.entrySet()) {
 			Player p = e.getKey();
 			p.getCards(e.getValue());
 		}
@@ -196,7 +195,7 @@ public class Round {
 	 */
 	private boolean roundIsEnd() {
 		// TODO 해야함.
-		if (playerRanking.size() == 4) {
+		if (rankCounter == 4) {
 			return true;
 		}
 		return false;
@@ -206,11 +205,91 @@ public class Round {
 	 * 점수를 계산한다.
 	 */
 	private void calculateScore() {
-		// TODO Auto-generated method stub
-		for(Player p :  playerRanking){
-			System.out.println(p.getPlayerName());
+		// TODO 점수계산이 뭐이리 복잡하지??
+		System.out.println("\n랭킹");
+
+		// 팀별 점수
+		int team1Score = 0;
+		int team2Score = 0;
+
+		// 등수별 플레이어
+		Player rank1 = getPlayerByRank(1);
+		Player rank2 = getPlayerByRank(2);
+		Player rank3 = getPlayerByRank(3);
+		Player rank4 = getPlayerByRank(4);
+
+		// 자기카드 점수 계산.
+		rank1.calculateCardScore();
+		rank2.calculateCardScore();
+		rank3.calculateCardScore();
+		rank4.calculateCardScore();
+
+		System.out.println("\n플레이어 \t 점수 \t 등수");
+		for (Player p : players) {
+			System.out.println(p.getPlayerName() + "\t" + p.getScore() + "\t" + p.getRank());
 		}
 
+		// 4등 점수를 1등에게 준다.
+		rank1.addScore(rank4.getScore());
+		rank4.addScore(-rank4.getScore());
+
+		// 1등이 티츄가 있으면 티츄점수 +
+		if (rank1.getTichu().equals(Tichu.TICHU)) {
+			rank1.addScore(100);
+		} else if (rank1.getTichu().equals(Tichu.LARGE_TICHU)) {
+			rank1.addScore(200);
+		}
+
+		// 나머지는 티츄가 있으면 -
+		for (Player p : players) {
+			if (!p.equals(rank1)) {
+				if (p.getTichu().equals(Tichu.TICHU)) {
+					p.addScore(-100);
+				} else if (p.getTichu().equals(Tichu.LARGE_TICHU)) {
+					p.addScore(-200);
+				}
+			}
+		}
+
+		// 팀별로 합친다
+		for (Player p : players) {
+			if (p.getTeam() == 1) {
+				team1Score += p.getScore();
+			} else {
+				team2Score += p.getScore();
+			}
+		}
+
+		// 1등과 2등이 같은 팀면 그 팀이 200점
+		if (rank1.getTeam() == rank2.getTeam()) {
+			if (rank1.getTeam() == 1) {
+				team1Score = 200;
+				team2Score = 0;
+			} else {
+				team1Score = 0;
+				team2Score = 200;
+			}
+		}
+
+		System.out.println();
+		System.out.println("팀1 \t "+team1Score);
+		System.out.println("팀2 \t "+team2Score);
+
+	}
+
+	/**
+	 * 등수에 해당하는 플레이어를 받아온다.
+	 * 
+	 * @param rank
+	 * @return
+	 */
+	private Player getPlayerByRank(int rank) {
+		for (Player p : players) {
+			if (p.getRank() == rank) {
+				return p;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -219,8 +298,6 @@ public class Round {
 	 * @param cardSet
 	 */
 	public void addCardSetOnDesk(CardSet cardSet) {
-		// TODO Auto-generated method stub
-		System.out.println("랭킹");
 		this.onDeskCards.add(cardSet);
 	}
 
@@ -251,10 +328,9 @@ public class Round {
 
 		// 플레이어가 라운드를 끝냈으면.
 		if (p.isEnd()) {
-
-			// 순위를 입력한다.
-			if (!playerRanking.contains(p)) {
-				playerRanking.offer(p);
+			// 순위를 입력한다. 1부터 4까지.
+			if (p.getRank() == 0) {
+				p.setRank(++rankCounter);
 			}
 		}
 
@@ -264,8 +340,8 @@ public class Round {
 	 * 현재 게임상황을 출력한다.
 	 */
 	public void printStatus() {
-		
-		//화면 초기화
+
+		// 화면 초기화
 		Util.clearConsole();
 
 		System.out

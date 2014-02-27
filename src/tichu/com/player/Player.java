@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import tichu.com.card.Card;
 import tichu.com.card.CardSet;
 import tichu.com.card.CardSetGenerator;
+import tichu.com.enums.CardRank;
 import tichu.com.enums.CardSuit;
 import tichu.com.enums.CardsetPattern;
 import tichu.com.enums.Tichu;
@@ -41,6 +42,12 @@ public class Player {
 
 	// 낼 수 있는 카드셋을 맵으로 정리함
 	protected Map<CardsetPattern, List<CardSet>> cardSetMapByPattern;
+
+	// 등수
+	private int rank;
+
+	// 점수
+	private int score;
 
 	/**
 	 * 플레이어 초기화.
@@ -82,17 +89,17 @@ public class Player {
 	 * @param counter
 	 *            모든 플레이어가 선택을 마쳤는지 확인하기 위한 카운터
 	 */
-	public void callTichu(Tichu tichu, Counter counter) {
-		
+	public void callLargeTichu(Counter counter) {
+
 		@SuppressWarnings("resource")
 		Scanner scan = new Scanner(System.in);
-		
-		System.out.println(tichu.toString().concat("? (Y/N) : "));
+
+		System.out.println("라지 티츄".concat("? (Y/N) : "));
 		String input = scan.next();
-		
-		if("Y".equalsIgnoreCase(input)){
-			this.tichu = tichu;
-		}else{
+
+		if ("Y".equalsIgnoreCase(input)) {
+			this.tichu = Tichu.LARGE_TICHU;
+		} else {
 			this.tichu = Tichu.NONE;
 		}
 
@@ -106,17 +113,17 @@ public class Player {
 	 * @param tichu
 	 *            티츄종류
 	 */
-	public void callTichu(Tichu tichu) {
+	public void callTichu() {
 
 		@SuppressWarnings("resource")
 		Scanner scan = new Scanner(System.in);
-		
-		System.out.println(tichu.toString().concat("? (Y/N) : "));
+
+		System.out.println("티츄".concat("? (Y/N) : "));
 		String input = scan.next();
-		
-		if("Y".equalsIgnoreCase(input)){
-			this.tichu = tichu;
-		}else{
+
+		if ("Y".equalsIgnoreCase(input)) {
+			this.tichu = Tichu.TICHU;
+		} else {
 			this.tichu = Tichu.NONE;
 		}
 	}
@@ -213,19 +220,20 @@ public class Player {
 
 	/**
 	 * 카드를 선택한다.
-	 * @param round 
+	 * 
+	 * @param round
 	 */
 	public void selectCards(Round round) {
-		
-		//낼 카드가 없으면 스킵!
-		if(onHandDeck.size()==0){
+
+		// 낼 카드가 없으면 스킵!
+		if (onHandDeck.size() == 0) {
 			return;
 		}
 
 		round.printStatus(); // 현재 게임판을 출력한다.
 
 		if (isFirstCard()) { // 처음 카드를 내는건지 판단한다.
-			callTichu(Tichu.TICHU); // 티츄여부를 확인한다.
+			callTichu(); // 티츄여부를 확인한다.
 		}
 
 		// 플레이어가 완료명령을 내릴때 까지 선택을 계속한다.
@@ -240,15 +248,16 @@ public class Player {
 		do {
 			// 현재 선택한 카드를 보여준다
 			System.out.println("선택한 카드 : \t " + this.tempCardList);
-			
-			//명령어를 보여준다
-			System.out.print("카드를 선택해주세요. (명령종료=X, 용=Y, 봉황=P, 개=G, 1=1, ♥=H, ◇=D, ♣=C, ♤=S ) \n => ");
+
+			// 명령어를 보여준다
+			System.out
+					.print("카드를 선택해주세요. (명령종료=X, 용=Y, 봉황=P, 개=G, 1=1, ♥=H, ◇=D, ♣=C, ♤=S ) \n => ");
 
 			// TODO 플레이어 입력 명령을 받는다.
 			input = scan.next();
-			
-			//종료명령이면 강제 종료
-			if("X".equalsIgnoreCase(input)){
+
+			// 종료명령이면 강제 종료
+			if ("X".equalsIgnoreCase(input)) {
 				return;
 			}
 
@@ -291,7 +300,7 @@ public class Player {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * 카드셋의 유효성을 체크한다.
 	 * 
@@ -305,12 +314,12 @@ public class Player {
 		try {
 			// 사용자가 선택한 카드로 카드셋을 생성하고
 			CardSet cardSet = new CardSet(this.tempCardList);
-			
-			//생성에 성공하면 선택 카드 리스트는 초기화
+
+			// 생성에 성공하면 선택 카드 리스트는 초기화
 			this.tempCardList = new ArrayList<>();
 
 			// TODO 낼 수 있는지 판단한다.
-			if (!validateCardSet(cardSet, playingCardSet)){
+			if (!validateCardSet(cardSet, playingCardSet)) {
 				System.out.println("낼 수 없는 카드조합입니다.");
 				return false;
 			}
@@ -320,13 +329,13 @@ public class Player {
 
 			return true;
 		} catch (CardSetException e) {
-			//아무것도 내지 않은것이면 그냥 패스한것이므로 true를 반환한다.
-			if(tempCardList.size() == 0){
+			// 아무것도 내지 않은것이면 그냥 패스한것이므로 true를 반환한다.
+			if (tempCardList.size() == 0) {
 				return true;
-				
-			}else{	//아니면 에러
+
+			} else { // 아니면 에러
 				System.out.println(e.getMessage());
-				//카드셋 초기화
+				// 카드셋 초기화
 				this.tempCardList = new ArrayList<>();
 				return false;
 			}
@@ -346,16 +355,16 @@ public class Player {
 
 		} else { // 진행중인 패턴에 맞추는 경우
 			CardsetPattern pattern = playingCardSet.getPattern();
-			
-			//패턴이 같거나, 자신의 카드가 폭탄일때.
+
+			// 패턴이 같거나, 자신의 카드가 폭탄일때.
 			if ((cardSet.getPattern().equals(pattern) && cardSet
 					.compareTo(playingCardSet) > 0)
 					|| cardSet.getPattern().equals(CardsetPattern.FOUR_CARDS)
 					|| cardSet.getPattern().equals(
 							CardsetPattern.STRAIGHT_FLUSH)) {
-				
+
 				// TODO 폭탄일 때 비교하는 로직도 들어가야 한다.
-				// TODO 유효성 검사는 다른 클래스에서 하는게 좋지 않을까?! 
+				// TODO 유효성 검사는 다른 클래스에서 하는게 좋지 않을까?!
 
 				return true;
 			}
@@ -394,25 +403,105 @@ public class Player {
 	public Tichu getTichu() {
 		return tichu;
 	}
-	
+
 	/**
 	 * 라운드 종료여부를 판별한다.
+	 * 
 	 * @return
 	 */
-	public boolean isEnd(){
-		if(onHandDeck.size() == 0){
+	public boolean isEnd() {
+		if (onHandDeck.size() == 0) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
 
 	/**
 	 * 플레이어 이름을 받아온다.
+	 * 
 	 * @return
 	 */
 	public String getPlayerName() {
 		return playerName;
+	}
+
+	/**
+	 * 카드점수 계산
+	 * 
+	 * @return
+	 */
+	public void calculateCardScore() {
+		int total = 0;
+		for (CardSet cs : takenCards) {
+			for (Card c : cs.getCards()) {
+				if (c.getRank().equals(CardRank.DRAGON)) {
+					total += 25;
+				} else if (c.getRank().equals(CardRank.PHOENIX)) {
+					total -= 25;
+				} else if (c.getRank().equals(CardRank.FIVE)) {
+					total += 5;
+				} else if (c.getRank().equals(CardRank.TEN)) {
+					total += 10;
+				} else if (c.getRank().equals(CardRank.KING)) {
+					total += 10;
+				}
+			}
+		}
+
+		// TODO 테스트용
+		System.out.println(playerName + "\t" + takenCards);
+
+		this.score = total;
+	}
+
+	/**
+	 * 등수를 받아온다.
+	 * 
+	 * @return
+	 */
+	public int getRank() {
+		return rank;
+	}
+
+	/**
+	 * 등수를 저장한다.
+	 * 
+	 * @param rank
+	 */
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
+
+	/**
+	 * 팀
+	 * 
+	 * @return
+	 */
+	public int getTeam() {
+		if (playSeq % 2 == 0) {
+			return 1;
+		} else {
+			return 2;
+		}
+	}
+
+	/**
+	 * 점수를 받아온다.
+	 * 
+	 * @return
+	 */
+	public int getScore() {
+		return score;
+	}
+
+	/**
+	 * 점수를 조정한다
+	 * 
+	 * @param score
+	 */
+	public void addScore(int score) {
+		this.score += score;
 	}
 
 }

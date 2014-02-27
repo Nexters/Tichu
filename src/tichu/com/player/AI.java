@@ -9,12 +9,18 @@ import tichu.com.card.CardSet;
 import tichu.com.enums.CardRank;
 import tichu.com.enums.CardSuit;
 import tichu.com.enums.CardsetPattern;
+import tichu.com.etc.Counter;
 import tichu.com.game.Round;
 
 public class AI extends Player {
 
 	public AI(String playerName) {
 		super(playerName);
+	}
+
+	@Override
+	public void callLargeTichu(Counter counter) {
+		counter.check();
 	}
 
 	@Override

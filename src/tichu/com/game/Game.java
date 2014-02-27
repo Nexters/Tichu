@@ -8,16 +8,16 @@ import tichu.com.player.Player;
 
 public class Game {
 	// 목표점수
-	public int score;
+	private int score;
 
 	// 플레이어 목록
-	public List<Player> players;
+	private List<Player> players;
 
 	// 플레이어 수. 0부터 시작하기 때문에 3이 최대다.
-	public int playerCount = 0;
+	private int playerCount = 0;
 
 	// 준비상태
-	public boolean isReady = false;
+	private boolean isReady = false;
 
 	public Game(int score) {
 		this.score = score;
