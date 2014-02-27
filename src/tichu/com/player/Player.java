@@ -1,4 +1,4 @@
-package tichu.com;
+package tichu.com.player;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,18 +8,21 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import tichu.com.card.Card;
+import tichu.com.card.CardSet;
+import tichu.com.card.CardSetGenerator;
 import tichu.com.enums.CardSuit;
 import tichu.com.enums.CardsetPattern;
 import tichu.com.enums.Tichu;
+import tichu.com.etc.Counter;
 import tichu.com.ex.CardException;
 import tichu.com.ex.CardSetException;
-import tichu.com.Card;
-import tichu.com.CardSet;
+import tichu.com.game.Round;
 
 public class Player {
 
 	// 플레이어 이름
-	protected String playerName;
+	private String playerName;
 
 	// 플레이어가 호출한 티츄 종류. 없음, 티츄, 라지티츄.
 	private Tichu tichu = Tichu.NONE;
@@ -158,7 +161,7 @@ public class Player {
 	 */
 	public boolean hasMahJong() {
 		for (Card c : this.onHandDeck) {
-			if (c.suit.equals(CardSuit.MAH_JONG)) {
+			if (c.getSuit().equals(CardSuit.MAH_JONG)) {
 				return true;
 			}
 		}
@@ -231,7 +234,7 @@ public class Player {
 		String input;
 
 		// 자신의 카드를 보여준다
-		System.out.format("\n%s 카드 : \t ", playerName);
+		System.out.format("\n%s 카드 : \t ", getPlayerName());
 		System.out.println(this.onHandDeck);
 
 		do {
@@ -402,6 +405,14 @@ public class Player {
 		}else{
 			return false;
 		}
+	}
+
+	/**
+	 * 플레이어 이름을 받아온다.
+	 * @return
+	 */
+	public String getPlayerName() {
+		return playerName;
 	}
 
 }

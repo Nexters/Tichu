@@ -1,4 +1,4 @@
-package tichu.com;
+package tichu.com.etc;
 
 public class Counter {
 	private int cnt = 0;

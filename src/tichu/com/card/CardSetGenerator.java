@@ -1,4 +1,4 @@
-package tichu.com;
+package tichu.com.card;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +11,6 @@ import java.util.Set;
 import tichu.com.enums.CardRank;
 import tichu.com.enums.CardSuit;
 import tichu.com.enums.CardsetPattern;
-import tichu.com.CardSet;
 
 public class CardSetGenerator {
 	/**
@@ -36,16 +35,16 @@ public class CardSetGenerator {
 		// 카드 정리
 		for (Card c : cardList) {
 			// 문양별 정리
-			if (!cardListMapBySuit.containsKey(c.suit)) {
-				cardListMapBySuit.put(c.suit, new ArrayList<Card>());
+			if (!cardListMapBySuit.containsKey(c.getSuit())) {
+				cardListMapBySuit.put(c.getSuit(), new ArrayList<Card>());
 			}
-			cardListMapBySuit.get(c.suit).add(c);
+			cardListMapBySuit.get(c.getSuit()).add(c);
 
 			// 숫자별 정리
-			if (!cardListMapByRank.containsKey(c.rank)) {
-				cardListMapByRank.put(c.rank, new ArrayList<Card>());
+			if (!cardListMapByRank.containsKey(c.getRank())) {
+				cardListMapByRank.put(c.getRank(), new ArrayList<Card>());
 			}
-			cardListMapByRank.get(c.rank).add(c);
+			cardListMapByRank.get(c.getRank()).add(c);
 		}
 
 		// 확인
@@ -152,14 +151,14 @@ public class CardSetGenerator {
 				// 단순 카드 비교가 아니라 카드셋 비교이기 떄문에 스트레이트플러쉬, 스트레이트와 같은 로직을 사용할 수가 없다.
 				for (CardSet cs1 : pairCardSetList) {// 한장씩 들고
 					int straightCnt = 0; // 비교 카운트
-					int c1Rank = cs1.getCards().get(0).rank.getValue();// 비교할
+					int c1Rank = cs1.getCards().get(0).getRank().getValue();// 비교할
 																	// 카드
 																	// 숫자
 					List<Card> tempCardList = new ArrayList<>();
 					tempCardList.addAll(cs1.getCards());
 
 					for (CardSet cs2 : pairCardSetList) {// 한장씩 비교
-						int c2Rank = cs2.getCards().get(0).rank.getValue();// 비교할
+						int c2Rank = cs2.getCards().get(0).getRank().getValue();// 비교할
 																		// 카드
 																		// 숫자
 
@@ -238,12 +237,12 @@ public class CardSetGenerator {
 
 		for (Card c1 : chkCardList) {// 한장씩 들고
 			int straightCnt = 0; // 비교 카운트
-			int c1Rank = c1.rank.getValue();// 비교할 카드 숫자
+			int c1Rank = c1.getRank().getValue();// 비교할 카드 숫자
 			List<Card> tempCardList = new ArrayList<>();
 			tempCardList.add(c1);
 
 			for (Card c2 : chkCardList) {// 한장씩 비교
-				int c2Rank = c2.rank.getValue();// 비교할 카드 숫자
+				int c2Rank = c2.getRank().getValue();// 비교할 카드 숫자
 
 				if (c1Rank != c2Rank) {// 같은 숫자가 아니면
 

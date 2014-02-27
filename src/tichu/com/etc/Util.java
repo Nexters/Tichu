@@ -1,4 +1,4 @@
-package tichu.com;
+package tichu.com.etc;
 
 public class Util {
 	/**

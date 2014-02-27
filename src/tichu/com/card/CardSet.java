@@ -1,4 +1,4 @@
-package tichu.com;
+package tichu.com.card;
 
 import java.util.List;
 
@@ -91,8 +91,8 @@ public class CardSet implements Comparable<CardSet> {
 			// TODO 봉황일때 처리를 해준다.
 			Card thisCard = this.cards.get(0);
 			Card comparedCard = compared.cards.get(0);
-			int thisCardRank = thisCard.rank.getValue();
-			int comparedCardRank = comparedCard.rank.getValue();
+			int thisCardRank = thisCard.getRank().getValue();
+			int comparedCardRank = comparedCard.getRank().getValue();
 
 			if (thisCardRank < comparedCardRank) {
 				return -1;

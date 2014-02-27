@@ -1,27 +1,23 @@
-package tichu.com;
+package tichu.com.card;
 
 import tichu.com.enums.CardRank;
 import tichu.com.enums.CardSuit;
-import tichu.com.enums.CardType;
+import tichu.com.etc.Util;
 import tichu.com.ex.CardException;
 
 public class Card implements Comparable<Card> {
-	public CardType type;
-	public CardSuit suit;
-	public CardRank rank;
+	private CardSuit suit;
+	private CardRank rank;
 
 	/**
-	 * 종류, 문양, 숫자를 설정한다.
+	 *  문양, 숫자를 설정한다.
 	 * 
-	 * @param type
-	 *            일반, 특수카드 종류
 	 * @param suit
 	 *            문양
 	 * @param rank
 	 *            숫자
 	 */
-	public Card(CardType type, CardSuit suit, CardRank rank) {
-		this.type = type;
+	public Card(CardSuit suit, CardRank rank) {
 		this.suit = suit;
 		this.rank = rank;
 	}
@@ -35,7 +31,7 @@ public class Card implements Comparable<Card> {
 	 *             입력 문자열에 해당하는 카드가 없을경우 예외를 던진다.
 	 */
 	public Card(String name) throws CardException {
-		// 이름을 받아와 검사하고, 종류, 문양, 숫자를 설정한다.
+		// 이름을 받아와 검사하고, 문양, 숫자를 설정한다.
 		makeCardByName(name);
 	}
 
@@ -155,4 +151,14 @@ public class Card implements Comparable<Card> {
 			return false;
 		}
 	}
+
+	public CardSuit getSuit() {
+		return suit;
+	}
+
+	public CardRank getRank() {
+		return rank;
+	}
+	
+	
 }

@@ -1,4 +1,4 @@
-package tichu.com;
+package tichu.com.card;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,7 +6,6 @@ import java.util.List;
 
 import tichu.com.enums.CardRank;
 import tichu.com.enums.CardSuit;
-import tichu.com.enums.CardType;
 
 /**
  * 카드를 생성한다.
@@ -39,11 +38,10 @@ public class CardFactory {
 	 */
 	private void makeExtraCards() {
 
-		Card MahJong = new Card(CardType.EXTRA, CardSuit.MAH_JONG, CardRank.ONE);
-		Card Dog = new Card(CardType.EXTRA, CardSuit.DOG, CardRank.DOG);
-		Card Phoenix = new Card(CardType.EXTRA, CardSuit.PHOENIX,
-				CardRank.PHOENIX);
-		Card Dragon = new Card(CardType.EXTRA, CardSuit.DRAGON, CardRank.DRAGON);
+		Card MahJong = new Card(CardSuit.MAH_JONG, CardRank.ONE);
+		Card Dog = new Card(CardSuit.DOG, CardRank.DOG);
+		Card Phoenix = new Card(CardSuit.PHOENIX, CardRank.PHOENIX);
+		Card Dragon = new Card(CardSuit.DRAGON, CardRank.DRAGON);
 
 		// 덱에 추가
 		deck.add(MahJong);
@@ -71,7 +69,7 @@ public class CardFactory {
 							&& !rank.equals(CardRank.DRAGON)) {
 
 						// 카드 생성하고
-						Card card = new Card(CardType.NORMAL, suit, rank);
+						Card card = new Card(suit, rank);
 
 						// 덱에 넣는다.
 						deck.add(card);

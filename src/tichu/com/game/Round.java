@@ -1,4 +1,4 @@
-package tichu.com;
+package tichu.com.game;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +8,13 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import tichu.com.card.Card;
+import tichu.com.card.CardFactory;
+import tichu.com.card.CardSet;
 import tichu.com.enums.Tichu;
+import tichu.com.etc.Counter;
+import tichu.com.etc.Util;
+import tichu.com.player.Player;
 
 public class Round {
 
@@ -202,7 +208,7 @@ public class Round {
 	private void calculateScore() {
 		// TODO Auto-generated method stub
 		for(Player p :  playerRanking){
-			System.out.println(p.playerName);
+			System.out.println(p.getPlayerName());
 		}
 
 	}

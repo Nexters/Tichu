@@ -1,7 +1,10 @@
-package tichu.com;
+package tichu.com.game;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import tichu.com.player.AI;
+import tichu.com.player.Player;
 
 public class Game {
 	// 목표점수

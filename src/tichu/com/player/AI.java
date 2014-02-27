@@ -1,13 +1,15 @@
-package tichu.com;
+package tichu.com.player;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import tichu.com.card.Card;
+import tichu.com.card.CardSet;
 import tichu.com.enums.CardRank;
 import tichu.com.enums.CardSuit;
-import tichu.com.enums.CardType;
 import tichu.com.enums.CardsetPattern;
+import tichu.com.game.Round;
 
 public class AI extends Player {
 
@@ -17,12 +19,12 @@ public class AI extends Player {
 
 	@Override
 	public void selectCards(Round round) {
-		
-		//낼 카드가 없으면 스킵!
-		if(onHandDeck.size()==0){
+
+		// 낼 카드가 없으면 스킵!
+		if (onHandDeck.size() == 0) {
 			return;
 		}
-		
+
 		// 잠시 휴식
 		try {
 			Thread.sleep(1);
@@ -32,7 +34,7 @@ public class AI extends Player {
 
 		round.printStatus(); // 현재 게임판을 출력한다.
 
-		System.out.format("\n%s 카드 : \t ", playerName);
+		System.out.format("\n%s 카드 : \t ", getPlayerName());
 		System.out.println(this.onHandDeck);
 
 		CardSet playingCardSet = round.getOnDeskCards().peekLast();
@@ -47,8 +49,7 @@ public class AI extends Player {
 			if (hasMahJongStraightCardSet != null) {
 				tempCardList.addAll(hasMahJongStraightCardSet.getCards());
 			} else {
-				tempCardList.add(new Card(CardType.EXTRA, CardSuit.MAH_JONG,
-						CardRank.ONE));
+				tempCardList.add(new Card(CardSuit.MAH_JONG, CardRank.ONE));
 			}
 		} else {
 			// 패턴이 없을 경우. 즉 처음 시작하는 경우
@@ -90,7 +91,7 @@ public class AI extends Player {
 				}
 			}
 		}
-		
+
 		// 현재 선택한 카드를 보여준다
 		System.out.println("선택한 카드 : \t " + this.tempCardList);
 	}
@@ -106,7 +107,7 @@ public class AI extends Player {
 					.get(CardsetPattern.STRAIGHTS);
 			for (CardSet cs : straightCardSet) {
 				for (Card c : cs.getCards()) {
-					if (c.suit.equals(CardSuit.MAH_JONG)) {
+					if (c.getSuit().equals(CardSuit.MAH_JONG)) {
 						return cs;
 					}
 				}
